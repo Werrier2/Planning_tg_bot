@@ -28,13 +28,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-//        System.out.println("Token: " + botToken);
         return botToken;
     }
 
     @Override
     public String getBotUsername() {
-//        System.out.println("Username: " + botUsername);
         return botUsername;
     }
 
@@ -64,6 +62,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        //System.out.println("me");
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message message = update.getMessage();
             String name = message.getFrom().getFirstName();
@@ -74,16 +73,19 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/start":
                     Answer("Hi " + name + "!", message.getChatId().toString());
                     Answer("Nice to meet you", message.getChatId().toString());
-                    SendWithoutURL(message.getChatId().toString());
+                    //SendWithoutURL(message.getChatId().toString());
+                    break;
+                case "spec":
+                    Answer("Secret text tss", message.getChatId().toString());
                     break;
                 default:
-                    Answer("I can do nothing))", message.getChatId().toString());
+                    //Answer("I can do nothing))", message.getChatId().toString());
                     SendWithoutURL(message.getChatId().toString());
                     break;
             }
         } else if (update.hasCallbackQuery()) {
             if (update.getCallbackQuery().getData().equals("knopka")) {
-                Answer("Ti zhmav knopka", update.getCallbackQuery().getMessage().getChatId().toString());
+                Answer("Это кнопка ничего не делает. Пока...", update.getCallbackQuery().getMessage().getChatId().toString());
             }
         }
     }
