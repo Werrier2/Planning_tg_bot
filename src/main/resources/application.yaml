@@ -1,0 +1,11 @@
+telegram:
+  bot:
+    username: "Werrier_bot"
+    token: "6604307375:AAG_HYpE_VJ8e4USBnZ7n6SdXSPG515By44"
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/example_db
+    username: example_user
+    password: "!2392480631"
