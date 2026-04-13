@@ -3,7 +3,7 @@ name: TG bot Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 
 jobs:
