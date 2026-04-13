@@ -14,6 +14,7 @@ public class BotConfig {
     public TelegramBotsApi telegramBotsApi(TelegramBot telegramBot) throws TelegramApiException {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(telegramBot);
+        System.setProperty("telegram.api.host", "149.154.167.220");
         return botsApi;
     }
 }
