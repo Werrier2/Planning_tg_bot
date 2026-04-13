@@ -73,6 +73,7 @@ jobs:
           host: ${{secrets.SSH_HOST}}
           username: ${{secrets.SSH_USER}}
           key: ${{secrets.SSH_KEY}}
+          port: ${{ secrets.SSH_PORT }}
           script: |
             docker pull ${{secrets.DOCKER_USERNAME}}/planning_tg_bot:latest
             docker stop app || true
