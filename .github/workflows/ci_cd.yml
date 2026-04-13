@@ -79,4 +79,5 @@ jobs:
             docker stop app || true
             docker rm app || true
             docker run -d --name app -p 8080:8080 \
+              -e BOT_TOKEN=${{ secrets.BOT_TOKEN }} \
               ${{secrets.DOCKER_USERNAME}}/planning_tg_bot:latest
