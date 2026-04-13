@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build & Test
+      - name: Build and Test
         run: mvn clean package
 
       - name: Docker login
