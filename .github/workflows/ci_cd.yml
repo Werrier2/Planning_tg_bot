@@ -79,6 +79,7 @@ jobs:
             docker stop app || true
             docker rm app || true
             docker run -d --name app \
+            --network host \
             --dns 8.8.8.8 --dns 1.1.1.1 \
             -p 8080:8080 \
             -e telegram.bot.token=${{ secrets.BOT_TOKEN }} \
