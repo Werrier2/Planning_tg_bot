@@ -62,3 +62,20 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
       - name: Build and Push Image
         run: docker buildx build --push -t ${{ secrets.DOCKER_USERNAME }}/planning_tg_bot:latest .
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USER}}
+          key: ${{secrets.SSH_KEY}}
+          script: |
+            docker pull ${{secrets.DOCKER_USERNAME}}/planning_tg_bot:latest
+            docker stop app || true
+            docker rm app || true
+            docker run -d --name app -p 8080:8080 \
+              ${{secrets.DOCKER_USERNAME}}/planning_tg_bot:latest
