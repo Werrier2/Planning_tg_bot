@@ -30,4 +30,4 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Build and push Docker image
-        run: docker buildx build --push -t ${{ secrets.DOCKER_USERNAME }}/Planning_tg_bot:latest .
+        run: docker buildx build --push -t ${{ secrets.DOCKER_USERNAME }}/planning_tg_bot:latest .
