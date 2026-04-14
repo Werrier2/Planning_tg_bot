@@ -122,7 +122,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     fatherID = message.getChatId().toString();
                     break;
                 default:
-                    if (isFatherExist && !message.getChatId().toString().equas(fatherID)) {
+                    if (isFatherExist && !message.getChatId().toString().equals(fatherID)) {
                         Answer("From " + name + ": \n" + message.getText(), fatherID);
                         //Answer("I can do nothing))", message.getChatId().toString());
                     } else if (message.getChatId().toString().equals(fatherID)) {
