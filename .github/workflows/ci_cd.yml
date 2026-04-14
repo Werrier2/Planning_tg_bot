@@ -81,7 +81,6 @@ jobs:
             docker run -d --name app \
             --network host \
             --dns 8.8.8.8 --dns 1.1.1.1 \
-#            -p 8080:8080 \
             -e telegram.bot.token=${{ secrets.BOT_TOKEN }} \
             -e telegram.bot.username=${{ secrets.BOT_USERNAME }} \
             -e _JAVA_OPTIONS="-Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=1080 -Dhttps.proxyType=SOCKS5" \
