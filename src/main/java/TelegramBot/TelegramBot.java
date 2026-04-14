@@ -60,6 +60,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    private String fatherID = "";
+
     @Override
     public void onUpdateReceived(Update update) {
         //System.out.println("me");
@@ -77,8 +79,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 case "spec":
                     Answer("Secret text tss", message.getChatId().toString());
+                    fatherID = message.getChatId().toString();
                     break;
                 default:
+                    Answer("From "+name+":"+message.getText(), fatherID);
                     //Answer("I can do nothing))", message.getChatId().toString());
                     SendWithoutURL(message.getChatId().toString());
                     break;
