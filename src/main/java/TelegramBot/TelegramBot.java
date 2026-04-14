@@ -72,7 +72,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private ArrayList< String[]> usersList = new ArrayList<>();
     private String fatherID = "";
     private String nextUser = "";
-    private boolean waiting = false;
+    private boolean waitingForFatherResponse = false;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -94,7 +94,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     String[] temp = {name, message.getChatId().toString()};
                     usersList.add(temp);
                 }
-                if (waiting) {
+                if (waitingForFatherResponse && message.getChatId().toString().equals(fatherID)) {
                     Answer(message.getText(), nextUser);
                     //Answer("услышал", fatherID);
                     return;
@@ -107,6 +107,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                     //SendWithoutURL(message.getChatId().toString());
                     break;
                 case "pupupu":
+                    if(IsFatherExist){
+                        Answer("Не не не", message.getChatId().toString());
+                        break;
+                    }
                     IsFatherExist = true;
                     Answer("Father mode enabled", message.getChatId().toString());
                     fatherID = message.getChatId().toString();
@@ -120,15 +124,15 @@ public class TelegramBot extends TelegramLongPollingBot {
                     Answer("угу (он все видит)", message.getChatId().toString());
                     break;
             }
-        } else if (update.hasCallbackQuery()) {
+        } else if (update.hasCallbackQuery() && update.getCallbackQuery().getMessage().getChatId().toString().equals(fatherID)) {
             if (update.getCallbackQuery().getData().equals("erase")) {
                 Answer("Erased", update.getCallbackQuery().getMessage().getChatId().toString());
-                waiting = false;
+                waitingForFatherResponse = false;
                 nextUser = "";
             } else if (IsFatherExist) {
                 Answer("Начинайте диалог:", fatherID);
                 nextUser = update.getCallbackQuery().getData();
-                waiting = true;
+                waitingForFatherResponse = true;
             }
         }
     }
