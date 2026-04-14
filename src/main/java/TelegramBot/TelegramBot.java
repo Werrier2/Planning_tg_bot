@@ -112,6 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         isFatherExist = false;
                         fatherID = "";
                     }
+                    break;
                 case "239932":
                     if (isFatherExist) {
                         Answer("Не не не", message.getChatId().toString());
