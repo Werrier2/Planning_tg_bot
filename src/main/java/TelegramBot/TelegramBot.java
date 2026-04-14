@@ -68,8 +68,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    boolean IsFatherExist = false;
-    private ArrayList< String[]> usersList = new ArrayList<>();
+    boolean isFatherExist = false;
+    private ArrayList<String[]> usersList = new ArrayList<>();
     private String fatherID = "";
     private String nextUserId = "";
     private boolean waitingForFatherResponse = false;
@@ -83,7 +83,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (message.getFrom().getLastName() != null) {
                 name = name + " " + message.getFrom().getLastName();
             }
-            if(IsFatherExist) {
+            if (isFatherExist) {
                 boolean userListContainsUser = false;
                 for (int i = 0; i < usersList.size(); i++) {
                     if (usersList.get(i)[0].equals(name) && usersList.get(i)[1].equals(message.getChatId().toString())) {
@@ -106,20 +106,26 @@ public class TelegramBot extends TelegramLongPollingBot {
                     Answer("Nice to meet you", message.getChatId().toString());
                     //SendWithoutURL(message.getChatId().toString());
                     break;
-                case "pupupu":
-                    if(IsFatherExist){
+                case "/deleteFather":
+                    if (message.getChatId().toString().equals(fatherID)) {
+                        Answer("Father deleted", fatherID);
+                        isFatherExist = false;
+                        fatherID = "";
+                    }
+                case "239932":
+                    if (isFatherExist) {
                         Answer("Не не не", message.getChatId().toString());
                         break;
                     }
-                    IsFatherExist = true;
+                    isFatherExist = true;
                     Answer("Father mode enabled", message.getChatId().toString());
                     fatherID = message.getChatId().toString();
                     break;
                 default:
-                    if (IsFatherExist && !message.getChatId().toString().equals(fatherID)) {
+                    if (isFatherExist && !message.getChatId().toString().equas(fatherID)) {
                         Answer("From " + name + ": \n" + message.getText(), fatherID);
                         //Answer("I can do nothing))", message.getChatId().toString());
-                    } else if (message.getChatId().toString().equals(fatherID)){
+                    } else if (message.getChatId().toString().equals(fatherID)) {
                         SendWithoutURL(fatherID);
                     }
                     Answer("угу (он все видит)", message.getChatId().toString());
@@ -130,7 +136,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Answer("Erased", update.getCallbackQuery().getMessage().getChatId().toString());
                 waitingForFatherResponse = false;
                 nextUserId = "";
-            } else if (IsFatherExist) {
+            } else if (isFatherExist) {
                 nextUserId = update.getCallbackQuery().getData();
                 String nextUserName = " <error> ";
                 for (int i = 0; i < usersList.size(); i++) {
