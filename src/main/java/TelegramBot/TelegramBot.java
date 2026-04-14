@@ -68,7 +68,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    boolean IsFather = false;
+    boolean IsFatherExist = false;
     private ArrayList< String[]> usersList = new ArrayList<>();
     private String fatherID = "";
     private String nextUser = "";
@@ -83,7 +83,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (message.getFrom().getLastName() != null) {
                 name = name + " " + message.getFrom().getLastName();
             }
-            if(IsFather) {
+            if(IsFatherExist) {
                 boolean userListContainsUser = false;
                 for (int i = 0; i < usersList.size(); i++) {
                     if (usersList.get(i)[0].equals(name) && usersList.get(i)[1].equals(message.getChatId().toString())) {
@@ -96,7 +96,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
                 if (waiting) {
                     Answer(message.getText(), nextUser);
-                    Answer("услышал", fatherID);
+                    //Answer("услышал", fatherID);
                     return;
                 }
             }
@@ -107,18 +107,17 @@ public class TelegramBot extends TelegramLongPollingBot {
                     //SendWithoutURL(message.getChatId().toString());
                     break;
                 case "pupupu":
-                    IsFather = true;
+                    IsFatherExist = true;
                     Answer("Father mode enabled", message.getChatId().toString());
                     fatherID = message.getChatId().toString();
                     break;
                 default:
-                    if (IsFather) {
+                    if (IsFatherExist) {
                         SendWithoutURL(fatherID);
                         Answer("From " + name + ":" + message.getText(), fatherID);
                         //Answer("I can do nothing))", message.getChatId().toString());
-                    } else {
-                        Answer("угу (он все видит)", message.getChatId().toString());
                     }
+                    Answer("угу (он все видит)", message.getChatId().toString());
                     break;
             }
         } else if (update.hasCallbackQuery()) {
@@ -126,8 +125,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Answer("Erased", update.getCallbackQuery().getMessage().getChatId().toString());
                 waiting = false;
                 nextUser = "";
-            } else if (IsFather) {
-                Answer("Ожидаю ответ:", fatherID);
+            } else if (IsFatherExist) {
+                Answer("Начинайте диалог:", fatherID);
                 nextUser = update.getCallbackQuery().getData();
                 waiting = true;
             }
