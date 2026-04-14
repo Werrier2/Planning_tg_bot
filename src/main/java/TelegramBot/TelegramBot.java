@@ -117,7 +117,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 default:
                     if (IsFatherExist && !message.getChatId().toString().equals(fatherID)) {
-                        Answer("From " + name + ":" + message.getText(), fatherID);
+                        Answer("From " + name + ": \n" + message.getText(), fatherID);
                         //Answer("I can do nothing))", message.getChatId().toString());
                     } else if (message.getChatId().toString().equals(fatherID)){
                         SendWithoutURL(fatherID);
@@ -131,8 +131,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                 waitingForFatherResponse = false;
                 nextUserId = "";
             } else if (IsFatherExist) {
-                Answer("Начинайте диалог с " + nextUserId + ":", fatherID);
                 nextUserId = update.getCallbackQuery().getData();
+                String nextUserName = " <error> ";
+                for (int i = 0; i < usersList.size(); i++) {
+                    if (usersList.get(i)[1].equals(nextUserId)) {
+                        nextUserName = usersList.get(i)[0];
+                    }
+                }
+                Answer("Начинайте диалог с " + nextUserName + ":", fatherID);
                 waitingForFatherResponse = true;
             }
         }
