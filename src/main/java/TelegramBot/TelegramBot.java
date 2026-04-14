@@ -112,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     fatherID = message.getChatId().toString();
                     break;
                 default:
-                    if (IsFatherExist) {
+                    if (IsFatherExist && !message.getChatId().toString().equals(fatherID)) {
                         SendWithoutURL(fatherID);
                         Answer("From " + name + ":" + message.getText(), fatherID);
                         //Answer("I can do nothing))", message.getChatId().toString());
