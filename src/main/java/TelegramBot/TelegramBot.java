@@ -39,8 +39,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         List<InlineKeyboardButton> keyboardButtonList = new ArrayList<>();
 
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText("Users list");
-        button.setCallbackData("empty knopka");
+        button.setText("Erase target user");
+        button.setCallbackData("erase");
         keyboardButtonList.add(button);
 
         for (int i = 0; i < usersList.size(); i++) {
@@ -83,22 +83,22 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (message.getFrom().getLastName() != null) {
                 name = name + " " + message.getFrom().getLastName();
             }
-            boolean userListContainsUser = false;
-            for (int i = 0; i < usersList.size(); i++) {
-                if(usersList.get(i)[0].equals(name) && usersList.get(i)[1].equals(message.getChatId().toString())){
-                    userListContainsUser = true;
+            if(IsFather) {
+                boolean userListContainsUser = false;
+                for (int i = 0; i < usersList.size(); i++) {
+                    if (usersList.get(i)[0].equals(name) && usersList.get(i)[1].equals(message.getChatId().toString())) {
+                        userListContainsUser = true;
+                    }
                 }
-            }
-            if (!userListContainsUser) {
-                String[] temp= {name,message.getChatId().toString()};
-                usersList.add(temp);
-            }
-            if(waiting){
-                Answer(message.getText(), nextUser);
-                Answer("услышал", nextUser);
-                waiting = false;
-                nextUser = "";
-                return;
+                if (!userListContainsUser) {
+                    String[] temp = {name, message.getChatId().toString()};
+                    usersList.add(temp);
+                }
+                if (waiting) {
+                    Answer(message.getText(), nextUser);
+                    Answer("услышал", fatherID);
+                    return;
+                }
             }
             switch (message.getText()) {
                 case "/start":
@@ -113,17 +113,19 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
                 default:
                     if (IsFather) {
+                        SendWithoutURL(fatherID);
                         Answer("From " + name + ":" + message.getText(), fatherID);
                         //Answer("I can do nothing))", message.getChatId().toString());
-                        SendWithoutURL(fatherID);
                     } else {
-                        Answer("угу", message.getChatId().toString());
+                        Answer("угу (он все видит)", message.getChatId().toString());
                     }
                     break;
             }
         } else if (update.hasCallbackQuery()) {
-            if (update.getCallbackQuery().getData().equals("knopka")) {
-                Answer("Это кнопка ничего не делает. Пока...", update.getCallbackQuery().getMessage().getChatId().toString());
+            if (update.getCallbackQuery().getData().equals("erase")) {
+                Answer("Erased", update.getCallbackQuery().getMessage().getChatId().toString());
+                waiting = false;
+                nextUser = "";
             } else if (IsFather) {
                 Answer("Ожидаю ответ:", fatherID);
                 nextUser = update.getCallbackQuery().getData();
