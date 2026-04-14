@@ -1,20 +1,18 @@
 package TelegramBot;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -38,11 +36,21 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void SendWithoutURL(String ChatID) {
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
-        InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText("Just another one button");
-        button.setCallbackData("knopka");
         List<InlineKeyboardButton> keyboardButtonList = new ArrayList<>();
+
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("Users list");
+        button.setCallbackData("empty knopka");
         keyboardButtonList.add(button);
+
+        for (int i = 0; i < usersList.size(); i++) {
+            InlineKeyboardButton tempbutton = new InlineKeyboardButton();
+            tempbutton.setText(usersList.get(i)[0]);
+            tempbutton.setCallbackData(usersList.get(i)[1]);
+            keyboardButtonList.add(tempbutton);
+        }
+//        насоздавать кнопок с айди юзерови каллбеками
+//        добавить кнопок с айди чатов юзеров
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(keyboardButtonList);
         keyboard.setKeyboard(rowList);
@@ -50,7 +58,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendMessage msg = SendMessage.builder()
                 .chatId(ChatID)
                 .parseMode("Markdown")
-                .text("this is knopka")
+                .text("Users list")
                 .replyMarkup(keyboard)
                 .build();
         try {
@@ -60,7 +68,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    boolean IsFather = false;
+    private ArrayList< String[]> usersList = new ArrayList<>();
     private String fatherID = "";
+    private String nextUser = "";
+    private boolean waiting = false;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -71,25 +83,51 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (message.getFrom().getLastName() != null) {
                 name = name + " " + message.getFrom().getLastName();
             }
+            boolean userListContainsUser = false;
+            for (int i = 0; i < usersList.size(); i++) {
+                if(usersList.get(i)[0].equals(name) && usersList.get(i)[1].equals(message.getChatId().toString())){
+                    userListContainsUser = true;
+                }
+            }
+            if (!userListContainsUser) {
+                String[] temp= {name,message.getChatId().toString()};
+                usersList.add(temp);
+            }
+            if(waiting){
+                Answer(message.getText(), nextUser);
+                Answer("услышал", nextUser);
+                waiting = false;
+                nextUser = "";
+                return;
+            }
             switch (message.getText()) {
                 case "/start":
                     Answer("Hi " + name + "!", message.getChatId().toString());
                     Answer("Nice to meet you", message.getChatId().toString());
                     //SendWithoutURL(message.getChatId().toString());
                     break;
-                case "spec":
-                    Answer("Secret text tss", message.getChatId().toString());
+                case "pupupu":
+                    IsFather = true;
+                    Answer("Father mode enabled", message.getChatId().toString());
                     fatherID = message.getChatId().toString();
                     break;
                 default:
-                    Answer("From "+name+":"+message.getText(), fatherID);
-                    //Answer("I can do nothing))", message.getChatId().toString());
-                    SendWithoutURL(message.getChatId().toString());
+                    if (IsFather) {
+                        Answer("From " + name + ":" + message.getText(), fatherID);
+                        //Answer("I can do nothing))", message.getChatId().toString());
+                        SendWithoutURL(fatherID);
+                    } else {
+                        Answer("угу", message.getChatId().toString());
+                    }
                     break;
             }
         } else if (update.hasCallbackQuery()) {
             if (update.getCallbackQuery().getData().equals("knopka")) {
                 Answer("Это кнопка ничего не делает. Пока...", update.getCallbackQuery().getMessage().getChatId().toString());
+            } else if (IsFather) {
+                Answer("Ожидаю ответ:", fatherID);
+                nextUser = update.getCallbackQuery().getData();
+                waiting = true;
             }
         }
     }
