@@ -129,6 +129,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                     } else if (message.getChatId().toString().equals(fatherID)) {
                         SendWithoutURL(fatherID);
                     }
+                    else{
+                        Answer("nothing at least", message.getChatId().toString());
+                    }
                     //Answer("угу (он все видит)", message.getChatId().toString());
                     break;
             }

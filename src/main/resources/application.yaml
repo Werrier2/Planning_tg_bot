@@ -4,8 +4,14 @@ telegram:
     token: "6604307375:AAG_HYpE_VJ8e4USBnZ7n6SdXSPG515By44"
 
 spring:
+  application:
+    name: TG_bot
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/example_db
-    username: example_user
-    password: "!2392480631"
+    driver-class-name: "org.postgresql.Driver"
+    url: "jdbc:postgresql://localhost:5432/tg_bot_db"
+    username: "tg_bot"
+    password: "2392480631"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
